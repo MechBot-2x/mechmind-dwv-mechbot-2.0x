@@ -1,7 +1,7 @@
 
 # MechBot 2.0x
 
-![Logo de MechBot](https://Almacenamiento interno/DCIM/Screenshots/IMG_20250225_222745.jpg)
+![Logo de MechBot](https://Almacenamientointerno/DCIM/Screenshots/IMG_20250225_222745.jpg)
 
 **MechBot 2.0x** es una aplicación innovadora diseñada para facilitar el diagnóstico de problemas mecánicos en vehículos. Utiliza inteligencia artificial y un sistema de ingreso de síntomas intuitivo para proporcionar diagnósticos precisos y códigos DTC (Diagnostic Trouble Codes) en tiempo real.
 
