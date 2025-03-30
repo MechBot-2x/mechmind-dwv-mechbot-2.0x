@@ -1,20 +1,89 @@
-# Seguridad
-*.pem
-*.key
+# Archivo .gitignore para MechBot 2.0x
+# Equipo Técnico - Configuración de exclusión para Git
+
+### ▶️ Entorno y configuración
 .env
+.env.local
+.env*.backup
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
 
-# Entornos
-venv/
+### ▶️ Dependencias Python
 __pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+pip-log.txt
+.python-version
+venv/
+env/
+.venv/
 
-# Logs
+### ▶️ Resultados de tests y coverage
+.coverage
+htmlcov/
+.coverage.*
+*.cover
+*.py,cover
+.pytest_cache/
+
+### ▶️ Builds y distribuciones
+build/
+dist/
+*.exe
+*.tar.gz
+*.whl
+.cache/
+
+### ▶️ Datos y archivos generados
 *.log
-*.dump
+*.sqlite3
+*.db
+*.parquet
+*.csv
+data/
+notebooks/ipynb_checkpoints/
 
-# Secretos dinámicos
-secrets.auto.tfvars
-*.tfstate
+### ▶️ Documentación generada
+docs/_build/
+docs/generated/
 
-# Secretos dinámicos
-secrets.auto.tfvars
-*.tfstate
+### ▶️ IDE específico
+*.code-workspace
+*.iml
+*.ipynb_checkpoints
+
+### ▶️ Kubernetes/Helm
+charts/*.backup
+charts/tmp/
+*.kubeconfig
+
+### ▶️ Archivos temporales
+*.tmp
+*.temp
+*~
+\#*#
+.#*
+
+### ▶️ Modelos ML locales
+models/*.onnx
+models/*.pkl
+!models/README.md  # Mantener este archivo
+
+ Frontend assets (Next.js)
+.next/
+out/
+public/static/_buildManifest.js
+public/static/_ssgManifest.js
+
+### ▶️ Docker
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.prod.yml  # Incluir este archivo
+
+### ▶️ Dependencias Node
+   node_modules/
+   .npm
