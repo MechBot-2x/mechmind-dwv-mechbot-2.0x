@@ -1,7 +1,7 @@
 ```markdown
-# MechBot 2.0x - Plataforma de Diagnóstico Automotriz Inteligente
 [![Build Status](https://github.com/mechmind-dwv/mechmind-dwv-mechbot-2.0x/actions/workflows/main.yml/badge.svg)](https://github.com/mechmind-dwv/mechmind-dwv-mechbot-2.0x/actions/workflows/main.yml)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://codecov.io/gh/mechmind-dwv/mechmind-dwv-mechbot-2.0x)
+# MechBot 2.0x - Plataforma de Diagnóstico Automotriz Inteligente
 
 ![MechBot Logo](https://mechbot-logo.png)  
 *Tecnología con propósito, innovación con precisión*
