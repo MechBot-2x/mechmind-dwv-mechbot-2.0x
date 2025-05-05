@@ -1,0 +1,10 @@
+graph LR
+    A[Cliente] --> B[CloudFront CDN]
+    B --> C[API Gateway]
+    C --> D[Servicio Auth]
+    C --> E[Servicio Diagnóstico]
+    E --> F[Kafka]
+    F --> G[Spark Streaming]
+    G --> H[Cassandra]
+    E --> I[Modelos IA]
+    I --> J[PostgreSQL]
