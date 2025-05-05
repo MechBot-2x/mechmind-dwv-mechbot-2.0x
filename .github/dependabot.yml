@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"  # For Python dependencies
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "mechmind-dwv"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore-dev"
+
+  - package-ecosystem: "github-actions"  # For GitHub Actions updates
+    directory: "/.github/workflows"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "github-actions"
+      - "dependencies"
+
+  - package-ecosystem: "npm"  # If you have frontend JavaScript
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
