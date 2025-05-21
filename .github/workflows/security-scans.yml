@@ -23,8 +23,8 @@ jobs:
           image-ref: 'services/auth-service/Dockerfile'  
           format: 'sarif'
           output: 'trivy-results.sarif'
-          ### **3. `security-scans.yml` - Auditoría de Seguridad**  
-**Propósito**: Detectar vulnerabilidades en código, dependencias y configuraciones.  
+          
+  **Propósito**: Detectar vulnerabilidades en código, dependencias y configuraciones.  
 **Herramientas**:  
 - **CodeQL**: Análisis estático de código.  
 - **Trivy**: Escaneo de imágenes Docker.  
