@@ -33,6 +33,13 @@ jobs:
              1. **Trigger**: Manual desde GitHub Actions UI.  
           2. **Validación**: Checks de SonarCloud y Codecov obligatorios.  
           3. **Despliegue**: Blue-Green para tolerancia a fallos.  
-
+         
+        - name: Cache Node Modules  
+            uses: actions/cache@v3  
+              with:  
+              path: |  
+                **/node_modules  
+           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+       
 <details>  
 <summary>**Configuración Detallada**</summary>
