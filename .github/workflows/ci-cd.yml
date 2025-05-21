@@ -1,14 +1,5 @@
 ### **1. `ci.yml` - Integración Continua**  
-**Propósito**: Ejecutar pruebas, linting y builds en cada push/PR.  
-**Características Clave**:  
-- Paralelización por servicio.  
-- Análisis estático con SonarCloud.  
-- Auditoría de performance con Lighthouse.  
 
-<details>  
-<summary>**Configuración Detallada (Extracto)**</summary>  
-
-```yaml  
 name: MechBot CI  
 on:  
   pull_request:  
