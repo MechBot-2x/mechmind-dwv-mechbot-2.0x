@@ -1,5 +1,5 @@
 ### **Estructura Detallada del Directorio**  
-
+```plaintext
 .github/  
 └── workflows/  
     ├── ci.yml                   # Integración continua (tests, builds, análisis)  
@@ -9,4 +9,5 @@
     ├── dependency-updates.yml   # Actualización automática de dependencias  
     ├── release.yml              # Generación de releases semánticos  
     ├── infra-as-code-checks.yml # Validación de Terraform/Kubernetes  
-    └── notify-status.yml        # Notificaciones a Slack/Teams  
+    └── notify-status.yml        # Notificaciones a Slack/Teams
+```
