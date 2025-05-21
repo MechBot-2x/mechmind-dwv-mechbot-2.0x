@@ -13,9 +13,6 @@ jobs:
          matrix:  
            os: [ubuntu-latest, windows-latest]  
            node-version: [18.x, 20.x]
-           
-     test-auth-service:  
-       runs-on: ubuntu-latest  
          steps:  
      - uses: actions/checkout@v4  
      - name: Setup Node.js  
