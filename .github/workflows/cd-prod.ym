@@ -1,0 +1,30 @@
+name: Deploy Production  
+on:  
+  workflow_dispatch:  
+    inputs:  
+      version:  
+        description: 'Versión del artefacto (ej: v2.1.0)'  
+        required: true  
+      environment:  
+        description: 'Entorno (prod)'  
+        default: 'prod'  
+
+jobs:  
+  deploy-eks:  
+    runs-on: ubuntu-latest  
+    environment: production  
+    steps:  
+      - uses: actions/checkout@v4  
+      - name: Assume AWS Role  
+        uses: aws-actions/configure-aws-credentials@v2  
+        with:  
+          role-to-assume: arn:aws:iam::1234567890:role/MechBotDeployRole  
+          aws-region: us-east-1  
+      - name: Desplegar en EKS  
+        run: |  
+          helm upgrade mechbot ./charts --install \  
+            --namespace production \  
+            --set image.tag=${{ github.sha }} \  
+            --atomic --timeout 10m  
+```  
+</details>  
