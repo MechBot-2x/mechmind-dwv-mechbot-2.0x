@@ -21,7 +21,13 @@ jobs:
       - uses: dependabot/fetch-metadata@v1  
       - name: Auto-approve minor updates  
         if: ${{ contains(dependencies, 'minor') }}  
-        run: gh pr review $PR_URL --approve  
+        run: gh pr review $PR_URL --approve
+        jobs:  
+     test:  
+       strategy:  
+         matrix:  
+           os: [ubuntu-latest, windows-latest]  
+           node-version: [18.x, 20.x]
 
 **Propósito**: Actualizar automáticamente dependencias y crear PRs verificados.  
 **Integraciones**:  
