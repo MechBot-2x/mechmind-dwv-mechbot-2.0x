@@ -1,0 +1,39 @@
+### **5. `release.yml` - Generación de Releases**    
+
+name: Release  
+on:  
+  push:  
+    tags:  
+      - 'v*.*.*'  
+
+jobs:  
+  publish-docker:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - uses: actions/checkout@v4  
+      - name: Login a Docker Hub  
+        uses: docker/login-action@v2  
+        with:  
+          username: ${{ secrets.DOCKER_USERNAME }}  
+          password: ${{ secrets.DOCKER_PASSWORD }}  
+      - name: Construir y Publicar  
+        run: |  
+          docker build -t mechbot/auth-service:${{ github.ref_name }} ./services/auth-service  
+          docker push mechbot/auth-service:${{ github.ref_name }}  
+
+  generate-changelog:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - uses: actions/checkout@v4  
+      - uses: release-drafter/release-drafter@v5  
+        with:  
+          config-name: .github/release-drafter.yml
+
+**Propósito**: Automatizar versionado semántico y publicación de artefactos.  
+**Flujo**:  
+1. **Versionado**: Basado en commits convencionales.  
+2. **Publicación**: Docker Hub, npm, GitHub Packages.  
+3. **Notas de Release**: Generadas desde commits.  
+
+<details>  
+<summary>**Configuración Detallada**</summary>
