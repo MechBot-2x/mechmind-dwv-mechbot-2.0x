@@ -1,0 +1,32 @@
+
+### **4. `dependency-updates.yml` - Gestión de Dependencias**  
+
+name: Dependency Updates  
+on:  
+  schedule:  
+    - cron: '0 8 * * 1'  # Lunes 8 AM UTC    
+
+jobs:  
+  renovate:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - uses: renovatebot/github-action@v34  
+        with:  
+          configurationFile: renovate.json  
+          token: ${{ secrets.RENOVATE_TOKEN }}  
+
+  dependabot:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - uses: dependabot/fetch-metadata@v1  
+      - name: Auto-approve minor updates  
+        if: ${{ contains(dependencies, 'minor') }}  
+        run: gh pr review $PR_URL --approve  
+
+**Propósito**: Actualizar automáticamente dependencias y crear PRs verificados.  
+**Integraciones**:  
+- **Dependabot**: Para npm, pip, Maven.  
+- **Renovate**: Configuraciones avanzadas de monorepos.  
+
+<details>  
+<summary>**Configuración Detallada**</summary>
