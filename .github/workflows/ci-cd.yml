@@ -1,36 +1,43 @@
-### **2. `cd-prod.yml` - Despliegue Continuo en Producción**  
+### **1. `ci.yml` - Integración Continua**  
 
-name: Deploy Production  
+name: MechBot CI  
 on:  
-  workflow_dispatch:  
-    inputs:  
-      version:  
-        description: 'Versión del artefacto (ej: v2.1.0)'  
-        required: true  
-      environment:  
-        description: 'Entorno (prod)'  
-        default: 'prod'  
+  pull_request:  
+    branches: [main, develop]  
+  push:  
+    branches: [main, develop]  
 
 jobs:  
-  deploy-eks:  
+  test-auth-service:  
     runs-on: ubuntu-latest  
-    environment: production  
     steps:  
       - uses: actions/checkout@v4  
-      - name: Assume AWS Role  
-        uses: aws-actions/configure-aws-credentials@v2  
+      - name: Setup Node.js  
+        uses: actions/setup-node@v3  
         with:  
-          role-to-assume: arn:aws:iam::1234567890:role/MechBotDeployRole  
-          aws-region: us-east-1  
-      - name: Desplegar en EKS  
-        run: |  
-          helm upgrade mechbot ./charts --install \  
-            --namespace production \  
-            --set image.tag=${{ github.sha }} \  
-            --atomic --timeout 10m  **Propósito**: Desplegar artefactos validados en AWS EKS/GKE con aprobación manual.  
-**Flujo**:  
-1. **Trigger**: Manual desde GitHub Actions UI.  
-2. **Validación**: Checks de SonarCloud y Codecov obligatorios.  
-3. **Despliegue**: Blue-Green para tolerancia a fallos.  
+          node-version: '20.x'  
+          cache: 'yarn'  
+      - run: yarn install --frozen-lockfile  
+      - run: yarn test:cov  
+      - uses: codecov/codecov-action@v3  
+        with:  
+          files: coverage/lcov.info  
+
+  lint-python:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - uses: actions/checkout@v4  
+      - uses: actions/setup-python@v4  
+        with:  
+          python-version: '3.11'  
+      - run: pip install ruff black  
+      - run: ruff check services/diagnostic-service/ 
+     
+**Propósito**: Ejecutar pruebas, linting y builds en cada push/PR.  
+**Características Clave**:  
+- Paralelización por servicio.  
+- Análisis estático con SonarCloud.  
+- Auditoría de performance con Lighthouse.  
+
 <details>  
-<summary>**Configuración Detallada**</summary>
+<summary>**Configuración Detallada (Extracto)**</summary>      
