@@ -28,7 +28,17 @@ jobs:
 **Herramientas**:  
 - **CodeQL**: Análisis estático de código.  
 - **Trivy**: Escaneo de imágenes Docker.  
-- **TruffleHog**: Detección de secretos expuestos.  
+- **TruffleHog**: Detección de secretos expuestos.
+**Protecciones de Entorno**:  
+   - Approvals manuales para despliegues en producción.  
+   - Secrets cifrados con políticas de acceso granular.  
 
-<details>  
-<summary>**Configuración Detallada**</summary>
+---
+
+### **Conclusión**  
+Esta configuración de workflows permite:  
+- **Escalabilidad**: Manejo eficiente de un monorepo con múltiples tecnologías.  
+- **Seguridad**: Escaneos proactivos en cada capa (código, dependencias, IaC).  
+- **Eficiencia**: Paralelización y cacheo para reducir tiempos de ejecución.  
+
+¿Necesitas ajustar algún flujo para requisitos específicos de tu equipo? 🔧
