@@ -8,12 +8,11 @@ on:
     branches: [main, develop]  
 
 jobs:  
-     test:  
+     test:  write 
        strategy:  
          matrix:  
            os: [ubuntu-latest, windows-latest]  
            node-version: [18.x, 20.x]
-         steps:  
      - uses: actions/checkout@v4  
      - name: Setup Node.js  
          uses: actions/setup-node@v3  
@@ -43,4 +42,4 @@ jobs:
 - Auditoría de performance con Lighthouse.  
 
 <details>  
-<summary>**Configuración Detallada (Extracto)**</summary>      
+<summary>**Configuración Detallada (Extracto)**</summary>
