@@ -1,0 +1,6 @@
+| Módulo | Tecnologías | Beneficios |
+|--------|------------|------------|
+| Diagnóstico IA | Python, PyTorch, ONNX | 94.3% precisión en fallas |
+| Interfaz 3D | React-Three-Fiber, WebGPU | Renderizado en <5ms |
+| Backend | FastAPI, gRPC, Kubernetes | Escala a 10K RPM |
+| Seguridad | JWT HS512, TLS 1.3 | Zero-Trust Architecture |
