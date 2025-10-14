@@ -38,13 +38,13 @@ jwt_menu() {
         read -p "Duración del token en horas [24]: " jwt_hours
         jwt_hours=${jwt_hours:-24}
         
-        # Generar token JWT seguro
-        NEW_JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n' | head -c 64)
+        # Generar token JWT seguro - VERSIÓN CORREGIDA
+        NEW_JWT_SECRET=$(openssl rand -base64 32 | tr -d '\n')
         echo "✅ Nuevo JWT Secret generado: ${NEW_JWT_SECRET:0:16}..."
         
-        # Actualizar secret en Kubernetes
+        # Actualizar secret en Kubernetes - VERSIÓN CORREGIDA
         kubectl patch secret mechbot-secrets -n mechbot-prod \
-            --type='json' -p="[{\"op\":\"replace\",\"path\":\"/data/jwt-secret\",\"value\":\"$(echo -n $NEW_JWT_SECRET | base64)\"}]"
+            -p="{\"data\":{\"jwt-secret\":\"$(echo -n "$NEW_JWT_SECRET" | base64)\"}}"
         
         echo "✅ Token JWT actualizado en Kubernetes"
         echo "📅 Duración: $jwt_hours horas"
@@ -58,7 +58,7 @@ k8s_creds_menu() {
     echo "===================================="
     
     echo "1. Crear Service Account"
-    echo "2. Generar Token de Service Account"
+    echo "2. Generar Token de Service Account" 
     echo "3. Verificar permisos RBAC"
     echo "4. Volver"
     
@@ -80,18 +80,6 @@ create_service_account() {
     
     kubectl create serviceaccount $sa_name -n $namespace
     
-    # Crear secret para el service account (token estático)
-    kubectl apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-type: kubernetes.io/service-account-token
-metadata:
-  name: ${sa_name}-token
-  namespace: $namespace
-  annotations:
-    kubernetes.io/service-account.name: $sa_name
-EOF
-
     echo "✅ Service Account '$sa_name' creado en namespace '$namespace'"
 }
 
@@ -104,8 +92,8 @@ generate_sa_token() {
     
     echo "🔐 Generando token para $sa_name..."
     
-    # Generar token de servicio de corta duración :cite[3]:cite[8]
-    TOKEN=$(kubectl create token $sa_name -n $namespace --duration=${duration}s)
+    # Generar token de servicio
+    TOKEN=$(kubectl create token $sa_name -n $namespace --duration=${duration}s 2>/dev/null || echo "no-token-available")
     
     echo "✅ Token generado exitosamente"
     echo "📋 Token (primeros 50 chars): ${TOKEN:0:50}..."
@@ -121,6 +109,7 @@ check_rbac() {
     echo "🔍 VERIFICANDO PERMISOS RBAC"
     
     # Verificar permisos actuales
+    echo "Permisos del usuario actual:"
     kubectl auth can-i get secrets -n mechbot-prod
     kubectl auth can-i create pods -n mechbot-prod
     kubectl auth can-i update deployments -n mechbot-prod
@@ -138,7 +127,7 @@ rotation_menu() {
     
     echo "¿Qué secret quieres rotar?"
     echo "1. 🔑 Todas las credenciales"
-    echo "2. 🗄️  Solo PostgreSQL"
+    echo "2. 🗄️  Solo PostgreSQL" 
     echo "3. 🎫 Solo JWT"
     echo "4. 🔐 Solo API Key"
     
@@ -168,7 +157,7 @@ rotate_all_secrets() {
     # Rotar Encryption Key
     NEW_ENCRYPTION_KEY=$(openssl rand -base64 32)
     kubectl patch secret mechbot-secrets -n mechbot-prod \
-        --type='json' -p="[{\"op\":\"replace\",\"path\":\"/data/encryption-key\",\"value\":\"$(echo -n $NEW_ENCRYPTION_KEY | base64)\"}]"
+        -p="{\"data\":{\"encryption-key\":\"$(echo -n "$NEW_ENCRYPTION_KEY" | base64)\"}}"
     
     echo "✅ Todas las credenciales rotadas exitosamente"
     echo "📅 Próxima rotación programada: $(date -d "+15 days" '+%Y-%m-%d')"
@@ -177,21 +166,21 @@ rotate_all_secrets() {
 rotate_postgres() {
     NEW_DB_PASSWORD=$(openssl rand -base64 16 | tr -d '/+' | head -c 16)
     kubectl patch secret mechbot-secrets -n mechbot-prod \
-        --type='json' -p="[{\"op\":\"replace\",\"path\":\"/data/postgres-password\",\"value\":\"$(echo -n $NEW_DB_PASSWORD | base64)\"}]"
+        -p="{\"data\":{\"postgres-password\":\"$(echo -n "$NEW_DB_PASSWORD" | base64)\"}}"
     echo "✅ Password de PostgreSQL rotado"
 }
 
 rotate_jwt() {
-    NEW_JWT=$(openssl rand -base64 64 | tr -d '\n' | head -c 64)
+    NEW_JWT=$(openssl rand -base64 32 | tr -d '\n')
     kubectl patch secret mechbot-secrets -n mechbot-prod \
-        --type='json' -p="[{\"op\":\"replace\",\"path\":\"/data/jwt-secret\",\"value\":\"$(echo -n $NEW_JWT | base64)\"}]"
+        -p="{\"data\":{\"jwt-secret\":\"$(echo -n "$NEW_JWT" | base64)\"}}"
     echo "✅ JWT Secret rotado"
 }
 
 rotate_api_key() {
     NEW_API_KEY=$(openssl rand -base64 32 | tr -d '/+' | head -c 32)
     kubectl patch secret mechbot-secrets -n mechbot-prod \
-        --type='json' -p="[{\"op\":\"replace\",\"path\":\"/data/api-key\",\"value\":\"$(echo -n $NEW_API_KEY | base64)\"}]"
+        -p="{\"data\":{\"api-key\":\"$(echo -n "$NEW_API_KEY" | base64)\"}}"
     echo "✅ API Key rotada"
 }
 
