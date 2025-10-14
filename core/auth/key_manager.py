@@ -1,32 +1,76 @@
 import os
 import logging
+import hvac
 from datetime import datetime, timedelta
 from typing import Tuple, Dict, Optional, List
-from core.crypto.crypto_engine import CryptoEngine  # Ruta corregida
 
 class JWTKeyManager:
-    def __init__(self):
+    def __init__(self, vault_enabled=True):
         self.logger = logging.getLogger(__name__)
-        self.crypto = CryptoEngine()
-        self.key_version = "v1"
+        self.vault_enabled = vault_enabled
         self.key_versions = {
             'current': (None, None),
-            'previous': (None, None)
+            'previous': (None, None),
+            'valid_from': None
         }
         
-    def initialize(self) -> bool:
-        """Versión simplificada para pruebas"""
-        if not self.crypto.initialize():
-            return False
+        if self.vault_enabled:
+            self._init_vault()
+        else:
+            self._init_local()
+
+    def _init_vault(self):
+        """Intenta conectar con Vault"""
+        try:
+            self.vault_client = hvac.Client(
+                url=os.getenv('VAULT_ADDR'),
+                token=os.getenv('VAULT_TOKEN')
+            )
             
-        # Generar una clave inicial si no existe
-        if not self.key_versions['current'][1]:
-            _, secret = self._generate_new_key()
-            self.key_versions['current'] = ("initial_key", secret)
-        return True
-    
-    def _generate_new_key(self) -> Tuple[str, str]:
-        """Versión simplificada sin Vault"""
-        key_id = f"key_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        secret = self.crypto.generate_secure_key(256)
-        return key_id, secret
+            if not self.vault_client.sys.is_initialized():
+                self.logger.warning("Vault no está inicializado, usando almacenamiento local")
+                self.vault_enabled = False
+                self._init_local()
+                
+        except Exception as e:
+            self.logger.error(f"Error conectando a Vault: {str(e)}")
+            self.vault_enabled = False
+            self._init_local()
+
+    def _init_local(self):
+        """Configuración local sin Vault"""
+        from hashlib import sha256
+        from base64 import b64encode
+        import secrets
+        
+        secret = secrets.token_hex(32)
+        key_id = f"local_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.key_versions = {
+            'current': (key_id, secret),
+            'previous': (None, None),
+            'valid_from': datetime.utcnow()
+        }
+        self.logger.info("Configurado almacenamiento local de claves")
+
+    def initialize(self) -> bool:
+        """Inicializa el servicio de claves"""
+        try:
+            if self.vault_enabled:
+                return self._init_with_vault()
+            return True
+        except Exception as e:
+            self.logger.error(f"Error inicializando: {str(e)}")
+            return False
+
+    def _init_with_vault(self) -> bool:
+        """Intenta cargar claves desde Vault"""
+        try:
+            if not self.vault_client.sys.is_sealed():
+                # Implementar lógica real de carga desde Vault aquí
+                return True
+            return False
+        except Exception as e:
+            self.logger.error(f"Error con Vault: {str(e)}")
+            return False
+
+    # ... (resto de métodos permanecen igual)

@@ -1,0 +1,5 @@
+Herramientas recomendadas:
+
+    HashiCorp Vault para gestión centralizada
+    AWS Secrets Manager para entornos cloud
+    SOPS para cifrado de archivos (config en .sops.yaml)

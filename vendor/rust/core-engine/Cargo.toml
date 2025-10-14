@@ -1,0 +1,15 @@
+[package]
+name = "mechbot-core"
+version = "0.1.0"
+edition = "2021"
+autobins = false
+
+[lib]
+name = "mechbot_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+openssl = { version = "0.10", features = ["vendored"] }
+tokio = { version = "1.36.0", features = ["full"] }
+serde = { version = "1.0.198", features = ["derive"] }
+parking_lot = "0.12.1"

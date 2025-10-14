@@ -1,0 +1,38 @@
+# kubernetes/policies/namespace-security.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mechbot-prod
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mechbot-security-policy
+  namespace: mechbot-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: security-policy
+  template:
+    metadata:
+      labels:
+        app: security-policy
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: policy-server
+        image: registry.k8s.io/pause:3.9
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL

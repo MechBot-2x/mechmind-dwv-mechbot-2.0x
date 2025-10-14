@@ -1,1 +1,1 @@
-Prueba de GPG
+Prueba de firma GPG

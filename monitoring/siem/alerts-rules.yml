@@ -1,0 +1,7 @@
+# En alerts-rules.yml
+- alert: JWT_Tampering_Attempt
+  expr: rate(jwt_failed_attempts[5m]) > 3
+  labels:
+    severity: critical
+  annotations:
+    summary: "Posible ataque de fuerza bruta JWT"

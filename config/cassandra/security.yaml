@@ -1,0 +1,4 @@
+# En cassandra/security.yaml
+authenticator: PasswordAuthenticator
+authorizer: CassandraAuthorizer
+role_manager: CassandraRoleManager

@@ -87,3 +87,5 @@ docker-compose.*.yml
 ### ▶️ Dependencias Node
    node_modules/
    .npm
+/rust-components/target
+/app/core_engine.so
