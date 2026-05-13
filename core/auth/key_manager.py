@@ -1,7 +1,7 @@
 import os
 import logging
 import hvac
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Tuple, Dict, Optional, List
 
 class JWTKeyManager:
@@ -13,7 +13,7 @@ class JWTKeyManager:
             'previous': (None, None),
             'valid_from': None
         }
-        
+
         if self.vault_enabled:
             self._init_vault()
         else:
@@ -26,12 +26,10 @@ class JWTKeyManager:
                 url=os.getenv('VAULT_ADDR'),
                 token=os.getenv('VAULT_TOKEN')
             )
-            
             if not self.vault_client.sys.is_initialized():
                 self.logger.warning("Vault no está inicializado, usando almacenamiento local")
                 self.vault_enabled = False
                 self._init_local()
-                
         except Exception as e:
             self.logger.error(f"Error conectando a Vault: {str(e)}")
             self.vault_enabled = False
@@ -42,15 +40,21 @@ class JWTKeyManager:
         from hashlib import sha256
         from base64 import b64encode
         import secrets
-        
+
         secret = secrets.token_hex(32)
         key_id = f"local_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.key_versions = {
             'current': (key_id, secret),
             'previous': (None, None),
-            'valid_from': datetime.utcnow()
+            'valid_from': datetime.now(timezone.utc)
         }
         self.logger.info("Configurado almacenamiento local de claves")
+
+    def get_signing_key(self):
+        """Devuelve la clave de firma actual para JWT"""
+        if self.key_versions['current'][1] is None:
+            raise ValueError("No signing key available")
+        return self.key_versions['current'][1]
 
     def initialize(self) -> bool:
         """Inicializa el servicio de claves"""
@@ -72,5 +76,3 @@ class JWTKeyManager:
         except Exception as e:
             self.logger.error(f"Error con Vault: {str(e)}")
             return False
-
-    # ... (resto de métodos permanecen igual)

@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 from flask import current_app
 
@@ -17,11 +17,11 @@ class JWTAuthService:
     def generate_token(self, signing_key: str, payload: Dict[str, Any]) -> str:
         """Genera un token JWT seguro para MechBot"""
         payload.update({
-            'iat': datetime.now(datetime.UTC),
-            'exp': datetime.now(datetime.UTC) + timedelta(hours=self.expire_hours),
+            'iat': datetime.now(timezone.utc),
+            'exp': datetime.now(timezone.utc) + timedelta(hours=self.expire_hours),
             'iss': 'mechbot-auth-service'
         })
-        
+
         return jwt.encode(
             payload,
             signing_key,

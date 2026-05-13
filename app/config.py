@@ -1,0 +1,5 @@
+SECRET_KEY = 'clave-secreta-temporal'
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRE_HOURS = 24
+VAULT_ENABLED = False
+LOCAL_KEY_DIR = '.keys'

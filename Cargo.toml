@@ -1,3 +1,0 @@
-[workspace]
-members = ["rust-components/core-engine"]
-resolver = "2"
