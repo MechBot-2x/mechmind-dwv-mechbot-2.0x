@@ -1,45 +1,36 @@
-### **1. `ci.yml` - Integración Continua**  
+name: MechBot CI
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
 
-name: MechBot CI  
-on:  
-  pull_request:  
-    branches: [main, develop]  
-  push:  
-    branches: [main, develop]  
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [18.x, 20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:cov
+      - uses: codecov/codecov-action@v3
+        with:
+          files: coverage/lcov.info
 
-jobs:  
-     test:  write 
-       strategy:  
-         matrix:  
-           os: [ubuntu-latest, windows-latest]  
-           node-version: [18.x, 20.x]
-     - uses: actions/checkout@v4  
-     - name: Setup Node.js  
-         uses: actions/setup-node@v3  
-        with:  
-          node-version: '20.x'  
-          cache: 'yarn'  
-      - run: yarn install --frozen-lockfile  
-      - run: yarn test:cov  
-      - uses: codecov/codecov-action@v3  
-        with:  
-          files: coverage/lcov.info  
-
-  lint-python:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - uses: actions/checkout@v4  
-      - uses: actions/setup-python@v4  
-        with:  
-          python-version: '3.11'  
-      - run: pip install ruff black  
-      - run: ruff check services/diagnostic-service/ 
-     
-**Propósito**: Ejecutar pruebas, linting y builds en cada push/PR.  
-**Características Clave**:  
-- Paralelización por servicio.  
-- Análisis estático con SonarCloud.  
-- Auditoría de performance con Lighthouse.  
-
-<details>  
-<summary>**Configuración Detallada (Extracto)**</summary>
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install ruff black
+      - run: ruff check services/diagnostic-service/
